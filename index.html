@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Köktürkçe Virtual Keyboard</title>
+    <!-- Add Google Noto Sans font -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
+    <!-- External stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>𐰚</text></svg>">
+</head>
+<body>
+    <h1>Köktürkçe Virtual Keyboard</h1>
+    
+    <div class="controls">
+        <button class="direction-toggle" id="directionToggle">Toggle Text Direction (RTL/LTR)</button>
+        <button class="export-btn" id="exportBtn">Export Text</button>
+        <button class="copy-btn" id="copyBtn">Copy Text</button>
+        <button class="toggle-dark-mode" id="darkModeToggle">Toggle Dark Mode</button>
+    </div>
+    
+    <textarea class="text-input" id="textInput" placeholder="Type here using the virtual keyboard..."></textarea>
+    
+    <div class="keyboard">
+        <!-- Row 1 - Based on the provided images -->
+        <div class="keyboard-row">
+            <div class="key" data-char="𐰀" title="a/e">𐰀</div>
+            <div class="key" data-char="𐰃" title="ı/i">𐰃</div>
+            <div class="key" data-char="𐰆" title="o/u">𐰆</div>
+            <div class="key" data-char="𐰇" title="ö/ü">𐰇</div>
+            <div class="key" data-char="𐰉" title="b">𐰉</div>
+            <div class="key" data-char="𐰑" title="d">𐰑</div>
+            <div class="key" data-char="𐰍" title="g">𐰍</div>
+            <div class="key" data-char="𐰴" title="k">𐰴</div>
+            <div class="key" data-char="𐰞" title="l">𐰞</div>
+            <div class="key" data-char="𐰣" title="n">𐰣</div>
+        </div>
+        
+        <!-- Row 2 -->
+        <div class="keyboard-row">
+            <div class="key" data-char="𐰺" title="r">𐰺</div>
+            <div class="key" data-char="𐰽" title="s">𐰽</div>
+            <div class="key" data-char="𐱃" title="t">𐱃</div>
+            <div class="key" data-char="𐰖" title="y">𐰖</div>
+            <div class="key" data-char="𐰲" title="ç">𐰲</div>
+            <div class="key" data-char="𐰢" title="m">𐰢</div>
+            <div class="key" data-char="𐰯" title="p">𐰯</div>
+            <div class="key" data-char="𐱁" title="ş">𐱁</div>
+            <div class="key" data-char="𐰔" title="z">𐰔</div>
+        </div>
+        
+        <!-- Row 3 -->
+        <div class="keyboard-row">
+            <div class="key" data-char="𐰶" title="ık/k/kı">𐰶</div>
+            <div class="key" data-char="𐰱" title="iç/çi">𐰱</div>
+            <div class="key" data-char="𐰸" title="ok/uk">𐰸</div>
+            <div class="key" data-char="𐰰" title="ök/ük">𐰰</div>
+            <div class="key" data-char="𐰡" title="ld/lt">𐰡</div>
+            <div class="key" data-char="𐰨" title="nç">𐰨</div>
+            <div class="key" data-char="𐰦" title="nd/nt">𐰦</div>
+            <div class="key" data-char="𐰭" title="ng">𐰭</div>
+            <div class="key" data-char="𐰪" title="ny">𐰪</div>
+        </div>
+        
+        <!-- Last Row -->
+        <div class="keyboard-row">
+            <div class="key special shift-key" id="shiftKey" data-action="shift">⇧</div>
+            <div class="key special caps-lock-key" id="capsLockKey" data-action="capslock">CAPS</div>
+            <div class="key" data-char=":" title="separator">:</div>
+            <div class="key special clear-key" data-action="clear">Clear</div>
+            <div class="key special enter-key" data-action="enter">return</div>
+            <div class="key special" data-action="backspace">⌫</div>
+        </div>
+    </div>
+
+    <div class="character-info" id="characterInfo">
+        <div class="info-row">
+            <div class="info-label">Character:</div>
+            <div id="infoChar"></div>
+        </div>
+        <div class="info-row">
+            <div class="info-label">Phonetic Value:</div>
+            <div id="infoPhonetic"></div>
+        </div>
+        <div class="info-row">
+            <div class="info-label">Unicode:</div>
+            <div id="infoUnicode"></div>
+        </div>
+    </div>
+
+    <div class="info-section">
+        <h2>About Köktürkçe (Old Turkic Script)</h2>
+        <p>The Old Turkic script (also known as Orkhon script or Köktürkçe) is the alphabet used by the Göktürk and other early Turkic khanates during the 8th to 10th centuries.</p>
+        <p>This virtual keyboard allows you to type in the Old Turkic script, focusing on the characters used in Göktürk inscriptions. Hover over each character to see its phonetic value. The text is by default displayed right-to-left, as in the original script, but you can toggle direction using the button above.</p>
+        <p>Note: In Old Turkic writing, a colon-like character (:) was used as a word separator instead of spaces.</p>
+        <p>The Shift key allows you to toggle between thick consonants (used with back vowels) and light consonants (used with front vowels) - this follows the vowel harmony principle in Turkic languages. Double-click Shift or press the Shift key twice quickly to enable "Caps Lock" mode, which keeps the shift state active for multiple characters.</p>
+        <h2>Made by Atlas Say. He is the best.</h2>
+    </div>
+
+    <!-- External JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html> 
