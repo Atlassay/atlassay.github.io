@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+CTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -12,16 +12,17 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>𐰚</text></svg>">
 </head>
 <body>
-    <h1>Köktürkçe Virtual Keyboard</h1>
+    <h1 data-lang-en="Köktürkçe Virtual Keyboard" data-lang-tr="Köktürkçe Sanal Klavye">Köktürkçe Virtual Keyboard</h1>
     
     <div class="controls">
-        <button class="direction-toggle" id="directionToggle">Toggle Text Direction (RTL/LTR)</button>
-        <button class="export-btn" id="exportBtn">Export Text</button>
-        <button class="copy-btn" id="copyBtn">Copy Text</button>
-        <button class="toggle-dark-mode" id="darkModeToggle">Toggle Dark Mode</button>
+        <button class="direction-toggle" id="directionToggle" data-lang-en="Toggle Text Direction (RTL/LTR)" data-lang-tr="Metin Yönünü Değiştir (RTL/LTR)">Toggle Text Direction (RTL/LTR)</button>
+        <button class="export-btn" id="exportBtn" data-lang-en="Export Text" data-lang-tr="Metni Dışa Aktar">Export Text</button>
+        <button class="copy-btn" id="copyBtn" data-lang-en="Copy Text" data-lang-tr="Metni Kopyala">Copy Text</button>
+        <button class="toggle-dark-mode" id="darkModeToggle" data-lang-en="Toggle Dark Mode" data-lang-tr="Karanlık Modu Değiştir">Toggle Dark Mode</button>
+        <button class="language-toggle" id="languageToggle" data-lang-en="Türkçe'ye Geç" data-lang-tr="Switch to English">Türkçe'ye Geç</button>
     </div>
     
-    <textarea class="text-input" id="textInput" placeholder="Type here using the virtual keyboard..."></textarea>
+    <textarea class="text-input" id="textInput" placeholder="Type here using the virtual keyboard..." data-lang-placeholder-en="Type here using the virtual keyboard..." data-lang-placeholder-tr="Sanal klavyeyi kullanarak buraya yazın..."></textarea>
     
     <div class="keyboard">
         <!-- Row 1 - Based on the provided images -->
@@ -67,36 +68,36 @@
         <!-- Last Row -->
         <div class="keyboard-row">
             <div class="key special shift-key" id="shiftKey" data-action="shift">⇧</div>
-            <div class="key special caps-lock-key" id="capsLockKey" data-action="capslock">CAPS</div>
+            <div class="key special caps-lock-key" id="capsLockKey" data-action="capslock" data-lang-en="CAPS" data-lang-tr="BÜYÜK">CAPS</div>
             <div class="key" data-char=":" title="separator">:</div>
-            <div class="key special clear-key" data-action="clear">Clear</div>
-            <div class="key special enter-key" data-action="enter">return</div>
+            <div class="key special clear-key" data-action="clear" data-lang-en="Clear" data-lang-tr="Temizle">Clear</div>
+            <div class="key special enter-key" data-action="enter" data-lang-en="return" data-lang-tr="dön">return</div>
             <div class="key special" data-action="backspace">⌫</div>
         </div>
     </div>
 
     <div class="character-info" id="characterInfo">
         <div class="info-row">
-            <div class="info-label">Character:</div>
+            <div class="info-label" data-lang-en="Character:" data-lang-tr="Karakter:">Character:</div>
             <div id="infoChar"></div>
         </div>
         <div class="info-row">
-            <div class="info-label">Phonetic Value:</div>
+            <div class="info-label" data-lang-en="Phonetic Value:" data-lang-tr="Fonetik Değer:">Phonetic Value:</div>
             <div id="infoPhonetic"></div>
         </div>
         <div class="info-row">
-            <div class="info-label">Unicode:</div>
+            <div class="info-label" data-lang-en="Unicode:" data-lang-tr="Unicode:">Unicode:</div>
             <div id="infoUnicode"></div>
         </div>
     </div>
 
     <div class="info-section">
-        <h2>About Köktürkçe (Old Turkic Script)</h2>
-        <p>The Old Turkic script (also known as Orkhon script or Köktürkçe) is the alphabet used by the Göktürk and other early Turkic khanates during the 8th to 10th centuries.</p>
-        <p>This virtual keyboard allows you to type in the Old Turkic script, focusing on the characters used in Göktürk inscriptions. Hover over each character to see its phonetic value. The text is by default displayed right-to-left, as in the original script, but you can toggle direction using the button above.</p>
-        <p>Note: In Old Turkic writing, a colon-like character (:) was used as a word separator instead of spaces.</p>
-        <p>The Shift key allows you to toggle between thick consonants (used with back vowels) and light consonants (used with front vowels) - this follows the vowel harmony principle in Turkic languages. Double-click Shift or press the Shift key twice quickly to enable "Caps Lock" mode, which keeps the shift state active for multiple characters.</p>
-        <h2>Made by Atlas Say. He is the best.</h2>
+        <h2 data-lang-en="About Köktürkçe (Old Turkic Script)" data-lang-tr="Köktürkçe Hakkında (Eski Türk Yazısı)">About Köktürkçe (Old Turkic Script)</h2>
+        <p data-lang-en="The Old Turkic script (also known as Orkhon script or Köktürkçe) is the alphabet used by the Göktürk and other early Turkic khanates during the 8th to 10th centuries." data-lang-tr="Eski Türk yazısı (aynı zamanda Orhun yazısı veya Köktürkçe olarak da bilinir), 8. ve 10. yüzyıllar arasında Göktürk ve diğer erken Türk kağanlıkları tarafından kullanılan alfabedir.">The Old Turkic script (also known as Orkhon script or Köktürkçe) is the alphabet used by the Göktürk and other early Turkic khanates during the 8th to 10th centuries.</p>
+        <p data-lang-en="This virtual keyboard allows you to type in the Old Turkic script, focusing on the characters used in Göktürk inscriptions. Hover over each character to see its phonetic value. The text is by default displayed right-to-left, as in the original script, but you can toggle direction using the button above." data-lang-tr="Bu sanal klavye, Göktürk yazıtlarında kullanılan karakterlere odaklanarak Eski Türk yazısıyla yazmanıza olanak tanır. Her karakterin fonetik değerini görmek için üzerine gelin. Metin, orijinal yazıda olduğu gibi varsayılan olarak sağdan sola görüntülenir, ancak yukarıdaki düğmeyi kullanarak yönü değiştirebilirsiniz.">This virtual keyboard allows you to type in the Old Turkic script, focusing on the characters used in Göktürk inscriptions. Hover over each character to see its phonetic value. The text is by default displayed right-to-left, as in the original script, but you can toggle direction using the button above.</p>
+        <p data-lang-en="Note: In Old Turkic writing, a colon-like character (:) was used as a word separator instead of spaces." data-lang-tr="Not: Eski Türk yazısında, boşluk yerine iki nokta üst üste benzeri bir karakter (:) kelime ayırıcı olarak kullanılmıştır.">Note: In Old Turkic writing, a colon-like character (:) was used as a word separator instead of spaces.</p>
+        <p data-lang-en="The Shift key allows you to toggle between thick consonants (used with back vowels) and light consonants (used with front vowels) - this follows the vowel harmony principle in Turkic languages. Double-click Shift or press the Shift key twice quickly to enable "Caps Lock" mode, which keeps the shift state active for multiple characters." data-lang-tr="Shift tuşu, kalın ünsüzler (arka ünlülerle kullanılanlar) ve ince ünsüzler (ön ünlülerle kullanılanlar) arasında geçiş yapmanıza olanak tanır - bu, Türk dillerindeki ünlü uyumu prensibini takip eder. 'Büyük Harf Kilidi' modunu etkinleştirmek için Shift tuşuna çift tıklayın veya hızlıca iki kez basın, bu mod shift durumunu birden fazla karakter için aktif tutar.">The Shift key allows you to toggle between thick consonants (used with back vowels) and light consonants (used with front vowels) - this follows the vowel harmony principle in Turkic languages. Double-click Shift or press the Shift key twice quickly to enable "Caps Lock" mode, which keeps the shift state active for multiple characters.</p>
+        <h2 data-lang-en="Made by Atlas Say. He is the best." data-lang-tr="Atlas Say tarafından yapılmıştır. O en iyisidir.">Made by Atlas Say. He is the best.</h2>
     </div>
 
     <!-- External JavaScript -->
