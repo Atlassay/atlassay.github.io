@@ -242,7 +242,8 @@ document.addEventListener('DOMContentLoaded', function() {
     function loadPivotSettings() {
         if (!pivotEnabled || !sourceLanguage || !libreEndpoint) return;
 
-        const enabled = localStorage.getItem('pivotEnabled') === 'true';
+        const enabledSetting = localStorage.getItem('pivotEnabled');
+        const enabled = enabledSetting === null ? !!pivotEnabled.checked : enabledSetting === 'true';
         const savedSourceLang = localStorage.getItem('pivotSourceLanguage') || 'auto';
         const savedEndpoint = localStorage.getItem('pivotLibreEndpoint') || libreEndpoint.value;
 
@@ -317,6 +318,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Initialize text directions
+    if (sourceInput) sourceInput.style.direction = 'ltr';
     turkishInput.style.direction = 'ltr'; // Turkish input is left-to-right
     turkicOutput.style.direction = 'rtl'; // Old Turkic output is right-to-left
     

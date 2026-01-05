@@ -19,7 +19,7 @@ There is **no extra semantic modeling** between steps; the Turkish output from L
 
 ### Configuration notes
 
-- The default endpoint is `https://libretranslate.com/translate`.
+- The default endpoint is `https://translate.fedilab.app/translate` (public instance).
 - If the browser blocks requests due to **CORS**, use an endpoint that allows browser access or place a small proxy in front of LibreTranslate.
 - API keys are optional (and are **not persisted** in localStorage).
 

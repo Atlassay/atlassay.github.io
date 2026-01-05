@@ -9,6 +9,12 @@
     gap: 30px;
 }
 
+/* Default direction inside translator should be LTR.
+   (Base styles set .text-input to RTL for the Old Turkic keyboard page.) */
+.translator-container .text-input {
+    direction: ltr;
+}
+
 /* Controls section spacing */
 .controls {
     display: flex;
