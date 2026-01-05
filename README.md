@@ -2,6 +2,27 @@
 
 A simple virtual keyboard for typing in Old Turkic script (Köktürkçe).
 
+## Köktürkçe Translator (Turkish → Old Turkic)
+
+This repo also includes a **rule-based** translator that converts **modern Turkish** text into **Old Turkic script** using historical phonetic / orthographic mapping rules.
+
+Open `translator.html` to use it.
+
+## Multilingual input via Turkish pivot (LibreTranslate)
+
+To support **multi-language input** while **preserving the existing Turkish→Köktürkçe rule-based module**, the translator now supports a pivot architecture:
+
+- **source text (any language)** → (LibreTranslate API) → **normalized Turkish**
+- **normalized Turkish** → (existing rule-based converter) → **Old Turkic output**
+
+There is **no extra semantic modeling** between steps; the Turkish output from LibreTranslate is passed directly into the existing converter pipeline.
+
+### Configuration notes
+
+- The default endpoint is `https://libretranslate.com/translate`.
+- If the browser blocks requests due to **CORS**, use an endpoint that allows browser access or place a small proxy in front of LibreTranslate.
+- API keys are optional (and are **not persisted** in localStorage).
+
 ## About Old Turkic Script
 
 The Old Turkic script (also known as Orkhon-Yenisei script or Köktürkçe) is the alphabet used by the Göktürk and other early Turkic khanates during the 8th to 10th centuries. The script is derived from the Old Sogdian alphabet and was used to write the Old Turkic language.

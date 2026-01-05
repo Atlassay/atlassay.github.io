@@ -1,5 +1,13 @@
 document.addEventListener('DOMContentLoaded', function() {
     // DOM elements
+    const sourceInput = document.getElementById('sourceInput');
+    const pivotEnabled = document.getElementById('pivotEnabled');
+    const sourceLanguage = document.getElementById('sourceLanguage');
+    const pivotTranslateBtn = document.getElementById('pivotTranslateBtn');
+    const libreEndpoint = document.getElementById('libreEndpoint');
+    const libreApiKey = document.getElementById('libreApiKey');
+    const pivotStatus = document.getElementById('pivotStatus');
+
     const turkishInput = document.getElementById('turkishInput');
     const turkicOutput = document.getElementById('turkicOutput');
     const keys = document.querySelectorAll('.key');
@@ -19,6 +27,12 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentLanguage = localStorage.getItem('language') || 'en'; // Default language is English
     let turkicShiftActive = false;
     let turkicCapsLockActive = false;
+
+    // Pivot translation state
+    let pivotDebounceTimer = null;
+    let pivotAbortController = null;
+    let lastPivotRequestId = 0;
+    let lastNormalizedTurkish = '';
     
     // Define consonant pairs for Old Turkic (thick/back - light/front)
     const consonantPairs = {
@@ -71,7 +85,10 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Update textarea placeholder
+        // Update textarea placeholders
+        if (sourceInput && sourceInput.hasAttribute('data-lang-placeholder-' + currentLanguage)) {
+            sourceInput.placeholder = sourceInput.getAttribute('data-lang-placeholder-' + currentLanguage);
+        }
         if (turkishInput.hasAttribute('data-lang-placeholder-' + currentLanguage)) {
             turkishInput.placeholder = turkishInput.getAttribute('data-lang-placeholder-' + currentLanguage);
         }
@@ -89,6 +106,215 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize language immediately
     updateLanguage();
+
+    // --- Pivot architecture (LibreTranslate -> Turkish -> existing rule-based converter) ---
+    function setPivotStatus(message, type = 'info') {
+        if (!pivotStatus) return;
+        pivotStatus.textContent = message || '';
+        pivotStatus.dataset.type = type;
+    }
+
+    function getPivotConfig() {
+        return {
+            enabled: !!pivotEnabled?.checked,
+            source: sourceLanguage?.value || 'auto',
+            endpoint: (libreEndpoint?.value || '').trim(),
+            apiKey: (libreApiKey?.value || '').trim()
+        };
+    }
+
+    function setPivotControlsEnabled(enabled) {
+        if (sourceLanguage) sourceLanguage.disabled = !enabled;
+        if (pivotTranslateBtn) pivotTranslateBtn.disabled = !enabled;
+    }
+
+    async function libreTranslateToTurkish(text, { source, endpoint, apiKey }) {
+        if (!endpoint) {
+            throw new Error('LibreTranslate endpoint is not set.');
+        }
+
+        // Cancel any in-flight request to avoid race conditions
+        if (pivotAbortController) {
+            pivotAbortController.abort();
+        }
+        pivotAbortController = new AbortController();
+
+        const payload = {
+            q: text,
+            source: source || 'auto',
+            target: 'tr',
+            format: 'text'
+        };
+        if (apiKey) payload.api_key = apiKey;
+
+        const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+            signal: pivotAbortController.signal
+        });
+
+        if (!response.ok) {
+            const bodyText = await response.text().catch(() => '');
+            throw new Error(`LibreTranslate error (${response.status}): ${bodyText || response.statusText}`);
+        }
+
+        const data = await response.json();
+        if (!data || typeof data.translatedText !== 'string') {
+            throw new Error('Unexpected LibreTranslate response format.');
+        }
+        return data.translatedText;
+    }
+
+    async function normalizeSourceToTurkish({ reason = 'manual' } = {}) {
+        const cfg = getPivotConfig();
+        if (!cfg.enabled) return;
+
+        const raw = (sourceInput?.value || '').trim();
+        if (!raw) {
+            lastNormalizedTurkish = '';
+            turkishInput.value = '';
+            turkishInput.dispatchEvent(new Event('input'));
+            setPivotStatus('', 'info');
+            return;
+        }
+
+        // If user explicitly sets source to Turkish, skip machine translation.
+        if (cfg.source === 'tr') {
+            lastNormalizedTurkish = raw;
+            turkishInput.value = raw;
+            turkishInput.dispatchEvent(new Event('input'));
+            setPivotStatus(currentLanguage === 'tr'
+                ? 'Kaynak dil Türkçe seçildi: makine çevirisi atlandı.'
+                : 'Source language is Turkish: skipped machine translation.', 'ok');
+            return;
+        }
+
+        const requestId = ++lastPivotRequestId;
+        setPivotStatus(
+            currentLanguage === 'tr'
+                ? (reason === 'auto' ? 'Türkçe’ye normalize ediliyor…' : 'Çeviri yapılıyor…')
+                : (reason === 'auto' ? 'Normalizing to Turkish…' : 'Translating…'),
+            'loading'
+        );
+
+        try {
+            const translated = await libreTranslateToTurkish(raw, cfg);
+            // Ignore late responses
+            if (requestId !== lastPivotRequestId) return;
+
+            lastNormalizedTurkish = translated;
+            turkishInput.value = translated;
+            // Feed directly into existing rule-based converter pipeline
+            turkishInput.dispatchEvent(new Event('input'));
+
+            setPivotStatus(
+                currentLanguage === 'tr'
+                    ? 'Türkçe normalizasyon tamamlandı (çıktı alttaki Türkçe alana aktarıldı).'
+                    : 'Turkish normalization complete (output copied into the Turkish field).',
+                'ok'
+            );
+        } catch (err) {
+            // Ignore abort errors (newer request started)
+            if (err && (err.name === 'AbortError' || err.message?.includes('aborted'))) {
+                return;
+            }
+            console.error('Pivot translation failed:', err);
+            setPivotStatus(
+                currentLanguage === 'tr'
+                    ? `Türkçe’ye normalizasyon başarısız: ${err?.message || 'Bilinmeyen hata'}`
+                    : `Normalization failed: ${err?.message || 'Unknown error'}`,
+                'error'
+            );
+        }
+    }
+
+    function scheduleAutoNormalize() {
+        const cfg = getPivotConfig();
+        if (!cfg.enabled) return;
+
+        if (pivotDebounceTimer) clearTimeout(pivotDebounceTimer);
+        pivotDebounceTimer = setTimeout(() => {
+            normalizeSourceToTurkish({ reason: 'auto' });
+        }, 650);
+    }
+
+    function loadPivotSettings() {
+        if (!pivotEnabled || !sourceLanguage || !libreEndpoint) return;
+
+        const enabled = localStorage.getItem('pivotEnabled') === 'true';
+        const savedSourceLang = localStorage.getItem('pivotSourceLanguage') || 'auto';
+        const savedEndpoint = localStorage.getItem('pivotLibreEndpoint') || libreEndpoint.value;
+
+        pivotEnabled.checked = enabled;
+        sourceLanguage.value = savedSourceLang;
+        libreEndpoint.value = savedEndpoint;
+
+        // We intentionally do NOT persist api keys in localStorage.
+        setPivotControlsEnabled(enabled);
+    }
+
+    function loadPivotText() {
+        if (!sourceInput) return;
+        const saved = localStorage.getItem('savedSourceText');
+        if (saved) sourceInput.value = saved;
+    }
+
+    function wirePivotEvents() {
+        if (!pivotEnabled) return;
+
+        pivotEnabled.addEventListener('change', () => {
+            const enabled = !!pivotEnabled.checked;
+            setPivotControlsEnabled(enabled);
+            localStorage.setItem('pivotEnabled', String(enabled));
+
+            if (enabled) {
+                setPivotStatus(
+                    currentLanguage === 'tr'
+                        ? 'Pivot mimarisi etkin: Kaynak metin önce Türkçe’ye çevrilecek, sonra Köktürkçe dönüştürücüye aktarılacak.'
+                        : 'Pivot enabled: Source text will be translated to Turkish, then passed to the Old Turkic converter.',
+                    'info'
+                );
+                normalizeSourceToTurkish({ reason: 'manual' });
+            } else {
+                setPivotStatus('', 'info');
+            }
+        });
+
+        if (sourceLanguage) {
+            sourceLanguage.addEventListener('change', () => {
+                localStorage.setItem('pivotSourceLanguage', sourceLanguage.value);
+                normalizeSourceToTurkish({ reason: 'manual' });
+            });
+        }
+
+        if (libreEndpoint) {
+            libreEndpoint.addEventListener('change', () => {
+                localStorage.setItem('pivotLibreEndpoint', libreEndpoint.value.trim());
+            });
+        }
+
+        if (sourceInput) {
+            sourceInput.addEventListener('input', () => {
+                localStorage.setItem('savedSourceText', sourceInput.value);
+                scheduleAutoNormalize();
+            });
+        }
+
+        if (pivotTranslateBtn) {
+            pivotTranslateBtn.addEventListener('click', () => {
+                normalizeSourceToTurkish({ reason: 'manual' });
+            });
+        }
+    }
+
+    loadPivotSettings();
+    loadPivotText();
+    wirePivotEvents();
+    if (pivotEnabled?.checked) {
+        // Auto-normalize once on load if there is saved text
+        normalizeSourceToTurkish({ reason: 'auto' });
+    }
     
     // Initialize text directions
     turkishInput.style.direction = 'ltr'; // Turkish input is left-to-right
@@ -535,6 +761,18 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log(`Divided "${word}" into syllables: [${syllables.join(', ')}]`);
         
         return syllables;
+    }
+
+    // Debug helper: mark known combined patterns inside syllables.
+    // This is only used in the optional "test" debug block below.
+    function markCombinedCharPatterns(syllable) {
+        if (!syllable || typeof syllable !== 'string') return syllable;
+        const patterns = ['ny', 'ng', 'nç', 'nd', 'nt', 'ld', 'lt', 'ok', 'uk', 'ök', 'ük', 'ık', 'kı', 'iç', 'çi'];
+        let out = syllable;
+        for (const p of patterns) {
+            out = out.replace(new RegExp(p, 'g'), `[${p}]`);
+        }
+        return out;
     }
     
     // Update Turkic output whenever Turkish input changes
