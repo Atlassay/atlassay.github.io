@@ -1,0 +1,13 @@
+services:
+  libretranslate:
+    image: libretranslate/libretranslate:latest
+    ports:
+      - "5000:5000"
+    environment:
+      # Allow browser calls from the static frontend.
+      - LT_CORS_ALLOW_ORIGINS=*
+      - LT_CORS_ALLOW_METHODS=GET,POST,OPTIONS
+      - LT_CORS_ALLOW_HEADERS=Authorization,Content-Type
+      # Keep it simple for local use
+      - LT_DISABLE_WEB_UI=true
+    restart: unless-stopped

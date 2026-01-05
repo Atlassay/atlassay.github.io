@@ -19,9 +19,29 @@ There is **no extra semantic modeling** between steps; the Turkish output from L
 
 ### Configuration notes
 
-- The default endpoint is `https://translate.fedilab.app/translate` (public instance).
-- If the browser blocks requests due to **CORS**, use an endpoint that allows browser access or place a small proxy in front of LibreTranslate.
-- API keys are optional (and are **not persisted** in localStorage).
+Public LibreTranslate instances are often **rate-limited**, **unreliable**, or require an **API key**. For a truly free setup, run LibreTranslate locally.
+
+#### Free option (recommended): run LibreTranslate locally with Docker
+
+1. Start LibreTranslate:
+
+```bash
+docker compose up -d
+```
+
+2. Serve the site locally (so you don’t run into file:// quirks):
+
+```bash
+python3 -m http.server 8080
+```
+
+3. Open the translator at `http://localhost:8080/translator.html`
+4. The default LibreTranslate endpoint in the UI is `http://localhost:5000/translate`
+
+#### Notes
+
+- If the browser blocks requests due to **CORS**, ensure your LibreTranslate instance is configured to allow it (the provided `docker-compose.yml` sets permissive CORS for local use).
+- API keys are optional depending on your instance (and are **not persisted** in localStorage).
 
 ## About Old Turkic Script
 
