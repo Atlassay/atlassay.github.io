@@ -27,7 +27,53 @@
     
     <div class="translator-container">
         <div class="input-section">
-            <h2 data-lang-en="Turkish Text" data-lang-tr="Türkçe Metin">Turkish Text</h2>
+            <h2 data-lang-en="Source Text (Any Language)" data-lang-tr="Kaynak Metin (Herhangi Bir Dil)">Source Text (Any Language)</h2>
+
+            <div class="pivot-controls">
+                <label class="pivot-toggle">
+                    <input type="checkbox" id="pivotEnabled">
+                    <span data-lang-en="Enable LibreTranslate → Turkish pivot" data-lang-tr="LibreTranslate → Türkçe pivotu etkinleştir">Enable LibreTranslate → Turkish pivot</span>
+                </label>
+
+                <div class="pivot-row">
+                    <label for="sourceLanguage" class="pivot-label" data-lang-en="Source language:" data-lang-tr="Kaynak dil:">Source language:</label>
+                    <select id="sourceLanguage" class="pivot-select" disabled>
+                        <option value="auto" selected data-lang-en="Auto detect" data-lang-tr="Otomatik algıla">Auto detect</option>
+                        <option value="tr" data-lang-en="Turkish" data-lang-tr="Türkçe">Turkish</option>
+                        <option value="en" data-lang-en="English" data-lang-tr="İngilizce">English</option>
+                        <option value="de" data-lang-en="German" data-lang-tr="Almanca">German</option>
+                        <option value="fr" data-lang-en="French" data-lang-tr="Fransızca">French</option>
+                        <option value="es" data-lang-en="Spanish" data-lang-tr="İspanyolca">Spanish</option>
+                        <option value="ru" data-lang-en="Russian" data-lang-tr="Rusça">Russian</option>
+                        <option value="ar" data-lang-en="Arabic" data-lang-tr="Arapça">Arabic</option>
+                        <option value="fa" data-lang-en="Persian" data-lang-tr="Farsça">Persian</option>
+                        <option value="zh" data-lang-en="Chinese" data-lang-tr="Çince">Chinese</option>
+                        <option value="ja" data-lang-en="Japanese" data-lang-tr="Japonca">Japanese</option>
+                        <option value="ko" data-lang-en="Korean" data-lang-tr="Korece">Korean</option>
+                    </select>
+
+                    <button class="pivot-btn" id="pivotTranslateBtn" disabled data-lang-en="Normalize to Turkish" data-lang-tr="Türkçe’ye normalize et">Normalize to Turkish</button>
+                </div>
+
+                <details class="pivot-advanced">
+                    <summary data-lang-en="LibreTranslate settings" data-lang-tr="LibreTranslate ayarları">LibreTranslate settings</summary>
+                    <div class="pivot-row">
+                        <label for="libreEndpoint" class="pivot-label" data-lang-en="Endpoint:" data-lang-tr="Uç nokta:">Endpoint:</label>
+                        <input id="libreEndpoint" class="pivot-input" type="url" value="https://libretranslate.com/translate" spellcheck="false" autocomplete="off">
+                    </div>
+                    <div class="pivot-row">
+                        <label for="libreApiKey" class="pivot-label" data-lang-en="API key (optional):" data-lang-tr="API anahtarı (opsiyonel):">API key (optional):</label>
+                        <input id="libreApiKey" class="pivot-input" type="password" placeholder="(optional)" autocomplete="off">
+                    </div>
+                    <p class="pivot-hint" data-lang-en="Note: If your browser blocks the request (CORS), use an endpoint that allows browser access or add a small proxy." data-lang-tr="Not: Tarayıcı isteği engellerse (CORS), tarayıcı erişimine izin veren bir uç nokta kullanın veya küçük bir proxy ekleyin.">Note: If your browser blocks the request (CORS), use an endpoint that allows browser access or add a small proxy.</p>
+                </details>
+
+                <div class="pivot-status" id="pivotStatus" aria-live="polite"></div>
+            </div>
+
+            <textarea class="text-input source-input" id="sourceInput" placeholder="Type here in any language..." data-lang-placeholder-en="Type here in any language..." data-lang-placeholder-tr="Buraya herhangi bir dilde yazın..."></textarea>
+
+            <h2 data-lang-en="Turkish (Pivot Output)" data-lang-tr="Türkçe (Pivot Çıktı)">Turkish (Pivot Output)</h2>
             <textarea class="text-input turkish-input" id="turkishInput" placeholder="Type here in Turkish..." data-lang-placeholder-en="Type here in Turkish..." data-lang-placeholder-tr="Buraya Türkçe yazın..."></textarea>
             
             <div class="keyboard-title" data-lang-en="Turkish Keyboard" data-lang-tr="Türkçe Klavye">Turkish Keyboard</div>
